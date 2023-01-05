@@ -10,31 +10,31 @@ import org.junit.jupiter.api.Test;
 class ShipTest {
 
   @Test
-  void checkCorrectIntroductionTest() {
-    boolean actual = Ship.checkCorrectIntroduction(0, 5, 0, 9);
-    assertFalse(actual);
-  }
-
-  @Test
-  void checkIncorrectIntroductionTest() {
-    boolean actual = Ship.checkCorrectIntroduction(0, 7, 0, 11);
+  void checkAccordFieldSize_True() {
+    boolean actual = Ship.checkAccordFieldSize(0, 5, 0, 9);
     assertTrue(actual);
   }
 
   @Test
-  void checkShipSizeTest() {
+  void checkAccordFieldSize_False() {
+    boolean actual = Ship.checkAccordFieldSize(0, 7, 0, 11);
+    assertFalse(actual);
+  }
+
+  @Test
+  void checkShipSize_True() {
     boolean actual = Ship.checkShipSize(3, 0, 0, 1, 3);
-    assertFalse(actual);
-  }
-
-  @Test
-  void checkShipIncorrectSizeTest() {
-    boolean actual = Ship.checkShipSize(3, 0, 0, 1, 5);
     assertTrue(actual);
   }
 
   @Test
-  void checkPlaceIsEmptyTest() {
+  void checkShipSize_False() {
+    boolean actual = Ship.checkShipSize(3, 0, 0, 1, 5);
+    assertFalse(actual);
+  }
+
+  @Test
+  void checkPlaceIsEmpty_False() {
     String[][] playerBoard = Factory.playerBoard();
     playerBoard[4][2] = Board.SHIPS;
     playerBoard[4][3] = Board.SHIPS;
@@ -45,11 +45,11 @@ class ShipTest {
     shipCoordinate[2] = new Coordinates(4, 2);
 
     boolean actual = Ship.checkPlaceIsEmpty(shipCoordinate, playerBoard);
-    assertTrue(actual);
+    assertFalse(actual);
   }
 
   @Test
-  void checkAroundOfShipTest() {
+  void checkAroundOfShip_False() {
     String[][] playerBoard = Factory.playerBoard();
 
     Coordinates[] shipCoordinate = new Coordinates[3];
@@ -58,11 +58,11 @@ class ShipTest {
     shipCoordinate[2] = new Coordinates(4, 2);
 
     boolean actual = Ship.checkAroundOfShip(shipCoordinate, playerBoard);
-    assertTrue(actual);
+    assertFalse(actual);
   }
 
   @Test
-  void getCoordinatesShipTest() {
+  void getCoordinatesShip_InputCorrectCoordinated() {
     String input = "A3 A1\n";
     ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
@@ -80,7 +80,7 @@ class ShipTest {
   }
 
   @Test
-  void getCoordinatesShipBadInputTest() {
+  void getCoordinatesShip_InputIncorrectCoordinatedWithoutNumber() {
     String input = "A A1\nA1 C1\n";
     ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
@@ -101,7 +101,7 @@ class ShipTest {
   }
 
   @Test
-  void getCoordinatesShipIncorrectTest() {
+  void getCoordinatesShip_InputIncorrectCoordinatedNumberBiggerThanBoard() {
     String input = "A9 A11\nC1 A1\n";
     ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
@@ -122,7 +122,7 @@ class ShipTest {
   }
 
   @Test
-  void getCoordinatesShipIncorrectShipSizeTest() {
+  void getCoordinatesShip_InputIncorrectShipLength() {
     String input = "A5 A9\nC1 A1\n";
     ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
@@ -143,7 +143,7 @@ class ShipTest {
   }
 
   @Test
-  void getCoordinatesShipOccupiedPlaceTest() {
+  void getCoordinatesShip_InputInOccupiedPlace() {
     String input = "D4 D6\nC1 A1\n";
     ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
@@ -164,7 +164,7 @@ class ShipTest {
   }
 
   @Test
-  void getCoordinatesShipPlaceToCloseTest() {
+  void getCoordinatesShip_InputCoordinatesIsToCloseToTheExistShip() {
     String input = "C4 C6\nC1 A1\n";
     ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
@@ -185,7 +185,7 @@ class ShipTest {
   }
 
   @Test
-  void createPlayerShipsTest() {
+  void createPlayerShips_CorrectInput_True() {
     String input = "A1 A5\nC1 C4\nE1 E3\nG1 G3\nI1 I2\n";
     ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
@@ -207,6 +207,4 @@ class ShipTest {
     }
 
   }
-
-
 }

@@ -20,7 +20,7 @@ class ShotTest {
   }
 
   @Test
-  void shotPlayerFailTest() {
+  void shotPlayer_IncorrectCoordinates() {
     String input = "A12\nA\n";
     ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
@@ -38,7 +38,7 @@ class ShotTest {
   }
 
   @Test
-  void shotPlayerMissTest() {
+  void shotPlayer_PlaceWasEmptySoItWasMiss() {
     String input = "A10\n";
     ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
@@ -56,7 +56,7 @@ class ShotTest {
   }
 
   @Test
-  void shotPlayerShipSankTest() {
+  void shotPlayer_ShipSankAndThanMiss() {
     String input = "A9\nB9\nA10\n";
     ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
@@ -74,7 +74,7 @@ class ShotTest {
   }
 
   @Test
-  void shotPlayerWinTest() {
+  void shotPlayer_PlayerWin() {
     String input = "A1\nB1\nC1\nD1\nE1\nA3\nB3\nC3\nD3\nA5\nB5\nC5\nA7\nB7\nC7\nA9\nB9";
     ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
     System.setIn(in);
@@ -91,33 +91,14 @@ class ShotTest {
     assertEquals(Shot.SHOT_WIN, result);
   }
 
-  StringBuilder board(StringBuilder result, String[][] playerBoardEnemy) {
-    char cr = 'A';
-    result.append("  ");
-    for (int i = 1; i <= Board.COLUMN; i++) {
-      result.append(i + " ");
-    }
-    result.append("\n");
-
-    for (int c = 0; c < Board.LINE; c++) {
-      result.append((cr) + " ");
-      cr++;
-      for (int i = 0; i < Board.COLUMN; i++) {
-        result.append(playerBoardEnemy[c][i] + " ");
-      }
-      result.append("\n");
-    }
-    return result;
-  }
-
   @Test
-  void checkShotWrongCoordinate() {
+  void checkShot_WrongCoordinate() {
     boolean actual = shot.checkShot(new Coordinates(11, 1), Factory.player1BoardEnemy);
     assertFalse(actual);
   }
 
   @Test
-  void checkShotAlreadyShotHereMissPlace() {
+  void checkShot_YouAlreadyShotHereThisPlaceIsMiss() {
     String[][] player1BoardEnemy = Factory.player1BoardEnemy;
     player1BoardEnemy[1][1] = Board.MISS;
     boolean actual = shot.checkShot(new Coordinates(1, 1), player1BoardEnemy);
@@ -125,7 +106,7 @@ class ShotTest {
   }
 
   @Test
-  void checkShotAlreadyShotHereShipPlace() {
+  void checkShot_YouAlreadyShotHereThisPlaceShip() {
     String[][] player1BoardEnemy = Factory.player1BoardEnemy;
     player1BoardEnemy[1][1] = Board.HIT_SHIP;
     boolean actual = shot.checkShot(new Coordinates(1, 1), player1BoardEnemy);
