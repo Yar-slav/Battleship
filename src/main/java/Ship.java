@@ -20,13 +20,13 @@ public class Ship {
     }
 
     // check correctly introduction
-    static boolean checkCorrectIntroduction(int startLine, int finishLine, int startColumn, int finishColumn) {
-        if (startLine < 0 || startLine >= 10 || finishLine < 0 || finishLine >= 10
-                || startColumn < 0 || startColumn >= 10 || finishColumn < 0 || finishColumn >= 10) {
+    static boolean checkAccordFieldSize(int startLine, int finishLine, int startColumn, int finishColumn) {
+        if (startLine < 0 || startLine >= Board.LINE || finishLine < 0 || finishLine >= Board.LINE
+                || startColumn < 0 || startColumn >= Board.COLUMN || finishColumn < 0 || finishColumn >= Board.COLUMN) {
             System.out.println(INCORRECT_DATA_ENTRY);
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     // check correct size ship
@@ -34,9 +34,9 @@ public class Ship {
         if (!(Math.abs(finishLine - startLine) + 1 == sizeShip
                 || Math.abs(startColumn - finishColumn) + 1 == sizeShip)) {
             System.out.println(WRONG_SHIP_LENGTH);
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     // check place is empty and the ability to insert a ship
@@ -44,10 +44,10 @@ public class Ship {
         for (Coordinates c : coordinates) {
             if (playerBoard[c.line][c.column].equals(Board.SHIPS)) {
                 System.out.println(OCCUPIED_PLACE);
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     // check place around ship and the ability to insert a ship
@@ -60,13 +60,26 @@ public class Ship {
                     if (i > -1 && i < 10 && j > -1 && j < 10) {
                         if (playerBoard[j][i].equals(Board.SHIPS)) {
                             System.out.println(PLACE_TO_CLOSE);
-                            return true;
+                            return false;
                         }
                     }
                 }
             }
         }
-        return false;
+        return true;
+    }
+
+    // check ship direction
+    public char checkDirection(int startLine, int finishLine, int startColumn, int finishColumn) {
+        if (startLine < finishLine && startColumn == finishColumn) {
+            return 'd';
+        } else if (finishLine < startLine && startColumn == finishColumn) {
+            return 'u';
+        } else if (startColumn < finishColumn && startLine == finishLine) {
+            return 'r';
+        } else  {
+            return 'l';
+        }
     }
 
     public Coordinates[] getCoordinatesShip(int sizeShip, String[][] playerBoard) {
@@ -74,7 +87,6 @@ public class Ship {
         coordinates = new Coordinates[sizeShip];
         char direction = 0;
         boolean check = true;
-
         do {
             try {
                 String coordinate = scanner.nextLine();
@@ -87,37 +99,20 @@ public class Ship {
                 int startLine = startLineString.charAt(0) - 'A';
                 int finishLine = finishLineString.charAt(0) - 'A';
 
-                if (checkCorrectIntroduction(startLine, finishLine, startColumn, finishColumn)) {
+                if (!checkAccordFieldSize(startLine, finishLine, startColumn, finishColumn)) {
                     continue;
                 }
-                if (checkShipSize(sizeShip, startLine, finishLine, startColumn, finishColumn)) {
+                if (!checkShipSize(sizeShip, startLine, finishLine, startColumn, finishColumn)) {
                     continue;
                 }
 
-                if (startLine < finishLine && startColumn == finishColumn) {
-                    direction = 'd';
-                } else if (finishLine < startLine && startColumn == finishColumn) {
-                    direction = 'u';
-                } else if (startColumn < finishColumn && startLine == finishLine) {
-                    direction = 'r';
-                } else if (finishColumn < startColumn && startLine == finishLine) {
-                    direction = 'l';
-                }
+                direction = checkDirection(startLine, finishLine, startColumn, finishColumn);
+                setCoordinatesByDirection(sizeShip, coordinates, direction, startColumn, startLine);
 
-                for (int i = 0; i < sizeShip; i++) {
-                    switch (direction) {
-                        case 'd' -> coordinates[i] = new Coordinates(startLine + i, startColumn);
-                        case 'u' -> coordinates[i] = new Coordinates(startLine - i, startColumn);
-                        case 'r' -> coordinates[i] = new Coordinates(startLine, startColumn + i);
-                        case 'l' -> coordinates[i] = new Coordinates(startLine, startColumn - i);
-                        default -> {
-                        }
-                    }
-                }
-                if (checkPlaceIsEmpty(coordinates, playerBoard)) {
+                if (!checkPlaceIsEmpty(coordinates, playerBoard)) {
                     continue;
                 }
-                if (checkAroundOfShip(coordinates, playerBoard)) {
+                if (!checkAroundOfShip(coordinates, playerBoard)) {
                     continue;
                 }
                 check = false;
@@ -126,6 +121,19 @@ public class Ship {
             }
         } while (check);
         return coordinates;
+    }
+
+    private static void setCoordinatesByDirection(int sizeShip, Coordinates[] coordinates, char direction, int startColumn, int startLine) {
+        for (int i = 0; i < sizeShip; i++) {
+            switch (direction) {
+                case 'd' -> coordinates[i] = new Coordinates(startLine + i, startColumn);
+                case 'u' -> coordinates[i] = new Coordinates(startLine - i, startColumn);
+                case 'r' -> coordinates[i] = new Coordinates(startLine, startColumn + i);
+                case 'l' -> coordinates[i] = new Coordinates(startLine, startColumn - i);
+                default -> {
+                }
+            }
+        }
     }
 
     public List<Coordinates[]> createPlayerShips(String[][] playerBoard) {

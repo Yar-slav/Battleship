@@ -68,16 +68,20 @@ public class Shot {
                         }
                     }
                 }
-                if (otherPlayerBoard[line][column].equals(Board.EMPTY)) {
-                    playerBoardEnemy[line][column] = Board.MISS;
-                    otherPlayerBoard[line][column] = Board.MISS;
-                }
+                putMissToBoard(playerBoardEnemy, otherPlayerBoard, line, column);
             } catch (Exception e) {
                 return WRONG_COORDINATE;
             }
             check = false;
         } while (check);
         return SHOT_MISS;
+    }
+
+    private static void putMissToBoard(String[][] playerBoardEnemy, String[][] otherPlayerBoard, int line, int column) {
+        if (otherPlayerBoard[line][column].equals(Board.EMPTY)) {
+            playerBoardEnemy[line][column] = Board.MISS;
+            otherPlayerBoard[line][column] = Board.MISS;
+        }
     }
 
     public boolean checkShot(Coordinates coordinatesShot, String[][] playerBoardEnemy) {
